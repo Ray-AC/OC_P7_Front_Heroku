@@ -19,6 +19,7 @@ app.layout = html.Div([
             {'label': 'Prédiction Client Live', 'value': 'prediction_client_live'},
             {'label': 'Data Drift', 'value': 'data_drift'},  # Option pour la fonction data_drift
             {'label': 'Interprétabilité', 'value': 'interpratibilite'},  # Option pour la fonction interpratibilite
+            {'label': 'Interprétabilité Globale', 'value': 'interpratibilite_globale'},
             {'label': 'Summary Stats Plot', 'value': 'summary_stats_plot'}  # Option pour summary_stats_plot
         ],
         value='prediction_client'
@@ -39,7 +40,8 @@ def update_output(value):
         return html.Div([
             html.A("Cliquez ici pour voir le Data Drift", href=f"https://oc-p7-back-10k-13d55ca190cc.herokuapp.com/data_drift", target="_blank")
         ])
-    
+    elif value == 'interpratibilite_globale':
+            return None    
     elif value in ['prediction_client', 'prediction_client_live', 'interpratibilite', 'summary_stats_plot']:
         return html.Div([
             html.Label('Sélectionner le client_id :'),
@@ -69,6 +71,11 @@ def update_client_prediction(client_id, value):
     # Si l'option sélectionnée est la fonction data_drift
     elif value == 'data_drift':
         return None
+    # Si l'option sélectionnée est la fonction data_drift
+    elif value == 'interpratibilite_globale':
+        response = requests.get("https://oc-p7-back-10k-13d55ca190cc.herokuapp.com/interpratibilite_globale")
+        image_base64 = base64.b64decode(response.content)
+        return html.Img(src='data:image/png;base64,{}'.format(base64.b64encode(image_base64).decode()), style={'width': '100%'})
     # Si l'option sélectionnée est la fonction interpratibilite
     elif value == 'interpratibilite':
         response = requests.get(f"https://oc-p7-back-10k-13d55ca190cc.herokuapp.com/interpratibilite?sk_id_curr_value={client_id}")
