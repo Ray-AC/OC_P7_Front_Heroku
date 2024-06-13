@@ -7,12 +7,8 @@ from dash import Dash, html, dcc, callback_context
 app = Dash(__name__)
 
 response = requests.get("https://oc-p7-back-10k-13d55ca190cc.herokuapp.com/get_unique_client_ids")
-if response.status_code == 200:
-    client_ids = response.json().get('client_ids', [])
-    dropdown_options = [{'label': str(client_id), 'value': client_id} for client_id in client_ids]
-else:
-    dropdown_options = []
-    print(f"Failed to fetch client IDs, status code: {response.status_code}, response: {response.text}")
+
+dropdown_options = [{'label': str(client_id), 'value': client_id} for client_id in response.json().get('client_ids', [])]
 
 # Layout de l'application
 app.layout = html.Div([
@@ -52,7 +48,7 @@ def update_output(value):
             dcc.Dropdown(
                 id='client-dropdown',
                 options=dropdown_options,
-                value=dropdown_options[0]['value'] if dropdown_options else None
+                value=dropdown_options[0]['value']
             )
         ])
 
