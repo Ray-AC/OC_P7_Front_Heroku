@@ -71,7 +71,7 @@ def update_client_prediction(client_id, value):
     # Si l'option sélectionnée est la fonction data_drift
     elif value == 'data_drift':
         return None
-    # Si l'option sélectionnée est la fonction data_drift
+    # Si l'option sélectionnée est la fonction interpratibilite globale
     elif value == 'interpratibilite_globale':
         response = requests.get("https://oc-p7-back-10k-13d55ca190cc.herokuapp.com/interpratibilite_globale")
         image_base64 = base64.b64decode(response.content)
@@ -84,7 +84,10 @@ def update_client_prediction(client_id, value):
         return html.Div('Client ID not found')
     else:
         # Si l'option sélectionnée est summary_stats_plot ou interpratibilite, afficher l'image ou décoder la réponse en base64
-        if value in ['summary_stats_plot', 'interpratibilite']:
+        if value == 'interpratibilite':
+            image_base64 = response.json().get('image')
+            return html.Img(src=f'data:image/png;base64,{image_base64}', style={'width': '100%'})
+        elif value == 'summary_stats_plot':
             response_content = base64.b64decode(response.content)
             return html.Img(src="data:image/png;base64,{}".format(base64.b64encode(response_content).decode()), style={'width': '100%'})
         else:
